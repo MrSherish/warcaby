@@ -1,0 +1,1 @@
+Pozwoli³em sobie scaliæ projekty dodaj¹c pliki Tymka do moich wypocin. W razie b³êdów, pytañ, pisaæ.

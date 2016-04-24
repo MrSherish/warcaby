@@ -17,6 +17,18 @@ namespace Warcaby
             selecting_field_series  //"kombo" zabójstw
         }
 
+        public struct Move
+        {
+            public Move(Point f, Point t)
+            {
+                From = f;
+                To = t;
+            }
+
+            public Point From;
+            public Point To;
+        }
+
         public class Checker
         {
             public Checker(int owner)
@@ -65,7 +77,7 @@ namespace Warcaby
                         break;
 
                     case State.selecting_field: //wybór kolejnego pola planszy na ktore ma stanąć pionek
-                        List<Point> l = game.getPossibleMoves(selectedCheckerField.X, selectedCheckerField.Y);
+                        List<Point> l = game.getPossibleMovesForField(selectedCheckerField.X, selectedCheckerField.Y);
                             foreach (Point p in l)
                         {
                             if(p.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
@@ -83,6 +95,14 @@ namespace Warcaby
         Player[] players = new Player[2];
 
         int currentPlayer = 0;
+
+        public int CurrentPlayer
+        {
+            get
+            {
+                return currentPlayer;
+            }
+        }
 
         private Checker[] board; // plansza ma -1 w miejscach braku pionka. Pionki gracza 0 mają indeks 0, a gracza 1 - 1.
 
@@ -252,8 +272,30 @@ namespace Warcaby
             return ret;
         }
 
+        public List<Move> getPossibleMoves()
+        {
+            List<Move> ret = new List<Move>();
+
+            for(int y=0;y< size;y++)
+            {
+                for(int x=0;x< size;x++)
+                {
+                    if(board[y * size + x]!=null && board[y*size+x].owner == currentPlayer)
+                    {
+                        List<Point> curr = getPossibleMovesForField(x, y);
+                        foreach(Point p in curr)
+                        {
+                            ret.Add(new Move(new Point(x,y),p));
+                        }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         //zwraca listę możliwych to "staniecia" pól, wokół podanego pola. Uwzględnia konieczność bicia, gdy wokół są przeciwnicy.
-        public List<Point> getPossibleMoves(int px,int py)
+        public List<Point> getPossibleMovesForField(int px,int py)
         {
             Checker checker = board[py * size + px];
 

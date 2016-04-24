@@ -21,11 +21,11 @@ namespace Warcaby
 
         private bool showPotentialMoves;    //czy wyswietlac podpowiedzi do ruchów
 
-        private List<Point> targets;        //cele do podpowiedzi ruchów
-
-        private Point currentField;         //aktualnie wybrane , zaznaczone myszką pole
+        private List<Game.Move> currentPossibleMoves; // lista par punktow do wyswietlania podpowiedzi;
 
         private Brush[] brushes = new Brush[2];     //kolory pionków
+
+        private Point selectedField;
 
         public BoardDrawer(Game g, Panel bP, int size)
         {
@@ -84,20 +84,30 @@ namespace Warcaby
                 {
                     if(game.Board[y * size + x]!=null && game.Board[y*size+x].owner>=0)
                     {
-                        gr.FillPie(brushes[game.Board[y * size + x].owner],
-                            new Rectangle(fieldSize *x + 1, fieldSize * y + 1, fieldSize - 2, fieldSize - 2),
-                                0, 360);
+                        if(x == selectedField.X && y == selectedField.Y && game.CurrentPlayer==game.Board[selectedField.Y*size+selectedField.X].owner)//wybrany pionek
+                        {
+                            gr.FillPie(Brushes.GreenYellow,
+                                new Rectangle(fieldSize * x + 1, fieldSize * y + 1, fieldSize - 2, fieldSize - 2),
+                                    0, 360);
+                        }
+                        else
+                        {
+                            gr.FillPie(brushes[game.Board[y * size + x].owner],
+                                new Rectangle(fieldSize * x + 1, fieldSize * y + 1, fieldSize - 2, fieldSize - 2),
+                                    0, 360);
+                        }
                     }
                 }
             }
 
+
             //rysowanie podpowiedzi
             if(showPotentialMoves)
             {
-                foreach(Point p in targets)
+                foreach(Game.Move m in currentPossibleMoves)
                 {
-                    gr.DrawLine(Pens.Ivory, new Point(p.X * fieldSize+fieldSize/2, p.Y * fieldSize + fieldSize / 2),
-                        new Point(currentField.X * fieldSize + fieldSize / 2, currentField.Y * fieldSize + fieldSize / 2));
+                    gr.DrawLine(Pens.Ivory, new Point(m.From.X * fieldSize+fieldSize/2, m.From.Y * fieldSize + fieldSize / 2),
+                        new Point(m.To.X * fieldSize + fieldSize / 2, m.To.Y * fieldSize + fieldSize / 2));
                 }
             }
 
@@ -106,18 +116,18 @@ namespace Warcaby
         //obsługa myszki - wywołanie funkcji obsługi w klasie game.
         private void mouseClick(object sender, MouseEventArgs e)
         {
-            Point selectedField = new Point(e.X / fieldSize,e.Y/fieldSize);
+            selectedField = new Point(e.X / fieldSize,e.Y/fieldSize);
             //lewy guzik odpowiada za wybieranie 
             if (e.Button.Equals(MouseButtons.Left))
             {
                 game.ProcessInputLeftButton(selectedField);
+                Refresh();
             }
             //prawy służy do podpowiedzi
             if (e.Button.Equals(MouseButtons.Right))
             {
                 showPotentialMoves = true;
-                targets = game.getPossibleMoves(selectedField.X, selectedField.Y);
-                currentField = selectedField;
+                currentPossibleMoves = game.getPossibleMoves();
                 Refresh();
             }
         }

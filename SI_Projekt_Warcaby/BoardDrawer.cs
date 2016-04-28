@@ -109,6 +109,7 @@ namespace Warcaby
                     gr.DrawLine(Pens.Ivory, new Point(m.From.X * fieldSize+fieldSize/2, m.From.Y * fieldSize + fieldSize / 2),
                         new Point(m.To.X * fieldSize + fieldSize / 2, m.To.Y * fieldSize + fieldSize / 2));
                 }
+                currentPossibleMoves.Clear();
             }
 
         }

@@ -77,8 +77,15 @@ namespace Warcaby
                         break;
 
                     case State.selecting_field: //wybór kolejnego pola planszy na ktore ma stanąć pionek
+                        Checker ch = game.board[selectedField.Y * game.size + selectedField.X];
+                        if (ch!=null && ch.owner==game.currentPlayer)
+                        {
+                            currentState = State.selecting_checker;
+                            ProcessInputLeftButton(selectedField);
+                            return;
+                        }
                         List<Point> l = game.getPossibleMovesForField(selectedCheckerField.X, selectedCheckerField.Y);
-                            foreach (Point p in l)
+                        foreach (Point p in l)
                         {
                             if(p.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
                             {

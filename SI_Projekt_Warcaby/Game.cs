@@ -19,12 +19,14 @@ namespace Warcaby
 
         public struct Move
         {
-            public Move(Point f, Point t)
+            public Move(Point f, Point t, bool killing)
             {
+                this.killing = killing;
                 From = f;
                 To = t;
             }
 
+            public bool killing;
             public Point From;
             public Point To;
         }
@@ -84,10 +86,10 @@ namespace Warcaby
                             ProcessInputLeftButton(selectedField);
                             return;
                         }
-                        List<Point> l = game.getPossibleMovesForField(selectedCheckerField.X, selectedCheckerField.Y);
-                        foreach (Point p in l)
+                        List<Move> l = game.getPossibleMovesForField(selectedCheckerField.X, selectedCheckerField.Y);
+                        foreach (Move m in l)
                         {
-                            if(p.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
+                            if(m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
                             {
                                 game.MoveChecker(selectedCheckerField, selectedField);
                                 game.nextPlayer();
@@ -289,10 +291,10 @@ namespace Warcaby
                 {
                     if(board[y * size + x]!=null && board[y*size+x].owner == currentPlayer)
                     {
-                        List<Point> curr = getPossibleMovesForField(x, y);
-                        foreach(Point p in curr)
+                        List<Move> curr = getPossibleMovesForField(x, y);
+                        foreach(Move m in curr)
                         {
-                            ret.Add(new Move(new Point(x,y),p));
+                            ret.Add(m);
                         }
                     }
                 }
@@ -302,24 +304,26 @@ namespace Warcaby
         }
 
         //zwraca listę możliwych to "staniecia" pól, wokół podanego pola. Uwzględnia konieczność bicia, gdy wokół są przeciwnicy.
-        public List<Point> getPossibleMovesForField(int px,int py)
+        public List<Move> getPossibleMovesForField(int px,int py)
         {
             Checker checker = board[py * size + px];
 
             if(checker == null)
             {
-                return new List<Point>();
+                return new List<Move>();
             }
 
-            List<Point> ret = new List<Point>();
+            List<Move> ret = new List<Move>();
 
             List<Point> enemies = enemiesAroundToKill(px, py);
+
+            Point curr = new Point(px, py);
 
             if(enemies.Count>0)
             {
                 foreach(Point en in enemies)
                 {
-                    ret.Add(new Point(en.X - (px - en.X), en.Y - (py - en.Y)));
+                    ret.Add(new Move(curr, new Point (en.X - (px - en.X), en.Y - (py - en.Y)),true));
                 }
                 return ret;
             }
@@ -332,13 +336,13 @@ namespace Warcaby
                    ty = py + 1;
                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
                    {
-                        ret.Add(new Point(tx, ty));
+                        ret.Add(new Move(curr,new Point(tx, ty), false));
                    }
                    tx = px - 1;
                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
                    {
-                       ret.Add(new Point(tx, ty));
-                   }
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
+                    }
                 }
                 else
                 {
@@ -346,12 +350,12 @@ namespace Warcaby
                     ty = py - 1;
                     if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
                     {
-                        ret.Add(new Point(tx, ty));
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
                     }
                     tx = px - 1;
                     if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
                     {
-                        ret.Add(new Point(tx, ty));
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
                     }
                 }
             }

@@ -284,6 +284,7 @@ namespace Warcaby
         public List<Move> getPossibleMoves()
         {
             List<Move> ret = new List<Move>();
+            List<Move> retKill = new List<Move>();
 
             for(int y=0;y< size;y++)
             {
@@ -294,12 +295,23 @@ namespace Warcaby
                         List<Move> curr = getPossibleMovesForField(x, y);
                         foreach(Move m in curr)
                         {
-                            ret.Add(m);
+                            if(m.killing)
+                            {
+                                retKill.Add(m);
+                            }
+                            else
+                            {
+                                ret.Add(m);
+                            }
                         }
                     }
                 }
             }
 
+            if(retKill.Count > 0)
+            {
+                return retKill;
+            }
             return ret;
         }
 

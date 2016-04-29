@@ -86,10 +86,10 @@ namespace Warcaby
                             ProcessInputLeftButton(selectedField);
                             return;
                         }
-                        List<Move> l = game.getPossibleMovesForField(selectedCheckerField.X, selectedCheckerField.Y);
+                        List<Move> l = game.getPossibleMoves();
                         foreach (Move m in l)
                         {
-                            if(m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
+                            if(m.From.Equals(selectedCheckerField) && m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
                             {
                                 game.MoveChecker(selectedCheckerField, selectedField);
                                 game.nextPlayer();
@@ -216,7 +216,7 @@ namespace Warcaby
         {
             Checker curr = board[py * size + px];
             List<Point> ret = new List<Point>();
-            if(curr.isKing)
+            if (curr.isKing)
             {
 
             }

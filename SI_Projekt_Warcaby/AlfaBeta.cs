@@ -6,6 +6,15 @@ namespace Warcaby
     class AlfaBeta : MinMax
     {
 
+        /// <summary>
+        /// Wymagany konstruktor
+        /// </summary>
+        public AlfaBeta(Game g)
+            :base(g)
+        {
+
+        }
+
         protected override void runAlgorithm()
         {
             root.Alfa = Int16.MinValue;

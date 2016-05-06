@@ -9,6 +9,12 @@ namespace Warcaby
 {
     class Game // note : narazie nie zaimplementowałem jeszcze "damek". Obsługa sterowania: Klikamy na pionek (zaczyna czerwony), następnie na pole. Jeszcze dorobię jakieś oznaczenia, ze wybrany 
     {
+        public enum Alhorithms
+        {
+            Human,
+            Minimax,
+            AlfaBeta
+        }
         //stany gry w których moze być gracz
         private enum State
         {
@@ -52,6 +58,32 @@ namespace Warcaby
                 game = g;
             }
         };
+
+        private class AIPlayer : Player
+        {
+            private MinMax algorithm;
+
+            public AIPlayer(Game g, Game.Alhorithms alg) : base(g)
+            {
+                if(alg==Game.Alhorithms.Minimax)
+                {
+                    algorithm = new MinMax(g);
+                }
+                if(alg == Game.Alhorithms.AlfaBeta)
+                {
+                    algorithm = new AlfaBeta(g);
+                }
+                if(alg == Game.Alhorithms.Human)
+                {
+                    throw new Exception("Wrong argument for ai player constructor.");
+                }
+            }
+
+            public Game.Move move()
+            {
+                return algorithm.SelectedMove;
+            }
+        }
 
         private class HumanPlayer : Player
         {
@@ -138,28 +170,17 @@ namespace Warcaby
         public void nextPlayer()
         {
             currentPlayer = 1 - currentPlayer;
+            if(players[currentPlayer] is AIPlayer)
+            {
+                this.MoveChecker((players[currentPlayer] as AIPlayer).move());
+                nextPlayer();
+            }
         }
 
-        public Game(bool isP1Human, bool isP2Human, int size, int checkersRows)
+        public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows)
         {
             this.size = size;
             board = new Checker[size*size];
-            if(isP1Human)
-            {
-                players[0] = new HumanPlayer(this);
-            }
-            else
-            {
-                // bot here
-            }
-            if (isP2Human)
-            {
-                players[1] = new HumanPlayer(this);
-            }
-            else
-            {
-                // bot here
-            }
             //inicjalizacja planszy
             for (int i=0;i< size*size;i++)
             {
@@ -182,6 +203,24 @@ namespace Warcaby
                 }
             }
             currentPlayer = 0;
+            if (p2 == Alhorithms.Human)
+            {
+                players[1] = new HumanPlayer(this);
+            }
+            else
+            {
+                players[1] = new AIPlayer(this, p2);
+                // bot here
+            }
+            if (p1 == Alhorithms.Human)
+            {
+                players[0] = new HumanPlayer(this);
+            }
+            else
+            {
+                players[0] = new AIPlayer(this, p1);
+                // bot here
+            }
         }
 
         public void ProcessInputLeftButton(Point selectedField)
@@ -192,12 +231,9 @@ namespace Warcaby
             }
         }
 
-        public void ProcessInputRightButton(Point selectedField)
+        public void MoveChecker(Move m)
         {
-            if (players[currentPlayer] is HumanPlayer)
-            {
-                //(players[currentPlayer] as HumanPlayer).ProcessInputRightButton(selectedField);
-            }
+            MoveChecker(m.From, m.To);
         }
 
         public void MoveChecker(Point from, Point to) //ta funkcja nie waliduje już ruchu, jednie przesuwa i zbija pionki. Narazie nie działa też dla "króla".

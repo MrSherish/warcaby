@@ -38,6 +38,8 @@
             this.buttonStart = new System.Windows.Forms.Button();
             this.labelPlayer1 = new System.Windows.Forms.Label();
             this.labelPlayer2 = new System.Windows.Forms.Label();
+            this.comboBoxAlgP1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxAlgP2 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.boardSizeSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rowsOfCheckers)).BeginInit();
             this.SuspendLayout();
@@ -123,27 +125,29 @@
             // 
             this.isP1Human.AutoSize = true;
             this.isP1Human.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.isP1Human.Location = new System.Drawing.Point(251, 13);
+            this.isP1Human.Location = new System.Drawing.Point(244, 13);
             this.isP1Human.Name = "isP1Human";
             this.isP1Human.Size = new System.Drawing.Size(101, 17);
             this.isP1Human.TabIndex = 7;
             this.isP1Human.Text = "Human Player 1";
             this.isP1Human.UseVisualStyleBackColor = true;
+            this.isP1Human.CheckedChanged += new System.EventHandler(this.isP1Human_CheckedChanged);
             // 
             // isP2Human
             // 
             this.isP2Human.AutoSize = true;
             this.isP2Human.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.isP2Human.Location = new System.Drawing.Point(251, 36);
+            this.isP2Human.Location = new System.Drawing.Point(244, 55);
             this.isP2Human.Name = "isP2Human";
             this.isP2Human.Size = new System.Drawing.Size(101, 17);
             this.isP2Human.TabIndex = 8;
             this.isP2Human.Text = "Human Player 2";
             this.isP2Human.UseVisualStyleBackColor = true;
+            this.isP2Human.CheckedChanged += new System.EventHandler(this.isP2Human_CheckedChanged);
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(387, 12);
+            this.buttonStart.Location = new System.Drawing.Point(16, 55);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(159, 40);
             this.buttonStart.TabIndex = 9;
@@ -171,11 +175,40 @@
             this.labelPlayer2.TabIndex = 11;
             this.labelPlayer2.Text = "Player 2";
             // 
+            // comboBoxAlgP1
+            // 
+            this.comboBoxAlgP1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.comboBoxAlgP1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxAlgP1.FormattingEnabled = true;
+            this.comboBoxAlgP1.Items.AddRange(new object[] {
+            "Minimax",
+            "Alfa - Beta"});
+            this.comboBoxAlgP1.Location = new System.Drawing.Point(351, 12);
+            this.comboBoxAlgP1.Name = "comboBoxAlgP1";
+            this.comboBoxAlgP1.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxAlgP1.TabIndex = 12;
+            this.comboBoxAlgP1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // comboBoxAlgP2
+            // 
+            this.comboBoxAlgP2.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.comboBoxAlgP2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBoxAlgP2.FormattingEnabled = true;
+            this.comboBoxAlgP2.Items.AddRange(new object[] {
+            "Minimax",
+            "Alfa - Beta"});
+            this.comboBoxAlgP2.Location = new System.Drawing.Point(351, 53);
+            this.comboBoxAlgP2.Name = "comboBoxAlgP2";
+            this.comboBoxAlgP2.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxAlgP2.TabIndex = 13;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 762);
+            this.Controls.Add(this.comboBoxAlgP2);
+            this.Controls.Add(this.comboBoxAlgP1);
             this.Controls.Add(this.labelPlayer2);
             this.Controls.Add(this.labelPlayer1);
             this.Controls.Add(this.buttonStart);
@@ -208,6 +241,8 @@
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.Label labelPlayer1;
         private System.Windows.Forms.Label labelPlayer2;
+        private System.Windows.Forms.ComboBox comboBoxAlgP1;
+        private System.Windows.Forms.ComboBox comboBoxAlgP2;
     }
 }
 

@@ -15,6 +15,34 @@ namespace Warcaby
         private LinkedList<Node> leafs = new LinkedList<Node>();
 
         /// <summary>
+        /// Konstruktor ustawiajacy grę
+        /// </summary>
+        public MinMax(Game game)
+        {
+            this.game = game;
+        }
+
+        /// <summary>
+        /// Referencja na instancję aktualnej rozgrywki
+        /// </summary>
+        protected Game game;
+
+        /// <summary>
+        ///  Ruch, który powinnien ustawiać algorytm na podstawie heurystyk etc. Będzie używany przez bota;
+        /// </summary>
+        private Game.Move move;
+        public Game.Move SelectedMove
+        {
+            get
+            {
+                //tymczasowo pierwszy możliwy ruch
+                return game.getPossibleMoves()[0];
+                // docelowo :
+                //return move;
+            }
+        }
+
+        /// <summary>
         /// Punkt startowy algorytmu
         /// </summary>
         public string run()

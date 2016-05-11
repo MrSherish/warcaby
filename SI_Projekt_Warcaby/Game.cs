@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace Warcaby
 {
@@ -167,14 +169,41 @@ namespace Warcaby
             }
         }
 
+        public int checkWin()
+        {
+            int c0 = 0, c1 = 0;
+            foreach (Checker ch in board)
+            {
+                if(ch!=null)
+                {
+                    if (ch.owner == 0)
+                    {
+                        c0++;
+                    }
+                    if (ch.owner == 1)
+                    {
+                        c1++;
+                    }
+                }
+            }
+            return c0 == 0 ? 0 : (c1 == 1 ? 1 : -1);
+        }
+
         public void nextPlayer()
         {
+            int cond = checkWin();
+            if (cond==0 || cond==1)
+            {
+                MessageBox.Show("Gra zakonczona.");
+                return;
+            }
             currentPlayer = 1 - currentPlayer;
             if(players[currentPlayer] is AIPlayer)
             {
                 this.MoveChecker((players[currentPlayer] as AIPlayer).move());
                 nextPlayer();
             }
+            boardDrawer.Refresh();
         }
 
         public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows)
@@ -219,6 +248,7 @@ namespace Warcaby
             else
             {
                 players[0] = new AIPlayer(this, p1);
+                currentPlayer = 1;
                 // bot here
             }
         }
@@ -244,7 +274,6 @@ namespace Warcaby
             }
             board[to.Y * size + to.X] = board[from.Y * size + from.X];
             board[from.Y * size + from.X] = null;
-            boardDrawer.Refresh();
         }
 
         //zwraca liste pól z przeciwnikami dookoła. Warunki w if-ach są trochę skomplikowane, ale chyba działają poprawnie. Wbrew pozorm jest tu trochę case'ów :D

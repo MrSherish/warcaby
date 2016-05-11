@@ -82,7 +82,11 @@ namespace Warcaby
             game = new Game(p1, p2,Decimal.ToInt32(boardSizeSelector.Value), Decimal.ToInt32(rowsOfCheckers.Value));
             drawer = new BoardDrawer(game, boardPanel,Decimal.ToInt32(boardSizeSelector.Value));
             game.boardDrawer = drawer;
-    }
+            if (!isP1Human.Checked)
+            {
+                game.nextPlayer();
+            }
+        }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {

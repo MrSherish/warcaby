@@ -36,7 +36,7 @@ namespace Warcaby
             get
             {
                 //tymczasowo pierwszy możliwy ruch
-                return game.getPossibleMoves()[0];
+                return game.getPossibleMoves(game.CurrentPlayer)[0];
                 // docelowo :
                 //return move;
             }

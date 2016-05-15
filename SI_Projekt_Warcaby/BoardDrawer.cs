@@ -128,7 +128,7 @@ namespace Warcaby
             if (e.Button.Equals(MouseButtons.Right))
             {
                 showPotentialMoves = true;
-                currentPossibleMoves = game.getPossibleMoves();
+                currentPossibleMoves = game.getPossibleMoves(game.CurrentPlayer);
                 Refresh();
             }
         }

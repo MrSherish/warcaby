@@ -120,7 +120,7 @@ namespace Warcaby
                             ProcessInputLeftButton(selectedField);
                             return;
                         }
-                        List<Move> l = game.getPossibleMoves();
+                        List<Move> l = game.getPossibleMoves(game.currentPlayer);
                         foreach (Move m in l)
                         {
                             if(m.From.Equals(selectedCheckerField) && m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
@@ -346,7 +346,7 @@ namespace Warcaby
             return ret;
         }
 
-        public List<Move> getPossibleMoves()
+        public List<Move> getPossibleMoves(int currentPlayer)
         {
             List<Move> ret = new List<Move>();
             List<Move> retKill = new List<Move>();

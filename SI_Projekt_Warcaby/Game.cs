@@ -186,7 +186,7 @@ namespace Warcaby
                     }
                 }
             }
-            return c0 == 0 ? 0 : (c1 == 1 ? 1 : -1);
+            return c0 == 0 ? 0 : (c1 == 0 ? 1 : -1);
         }
 
         public void nextPlayer()

@@ -36,9 +36,9 @@ namespace Warcaby
             get
             {
                 //tymczasowo pierwszy możliwy ruch
-                return game.getPossibleMoves(game.CurrentPlayer)[0];
+                //return game.getPossibleMoves(game.CurrentPlayer)[0];
                 // docelowo :
-                //return move;
+                return move;
             }
         }
 
@@ -64,7 +64,7 @@ namespace Warcaby
                 buildTree(root, Depth, game.GetBoardCopy());
                 DateTime after = DateTime.Now;
                 string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
-                //MessageBox.Show(message);
+                MessageBox.Show(message);
                 
                 if (computerStarts)
                     max(root);
@@ -95,7 +95,7 @@ namespace Warcaby
                 node.Children[i].CurrentPlayer = node.CurrentPlayer == 0 ? 1 : 0;
                 if (levelsLeft <= 1) //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
                 {
-                    node.Children[i].Value = ratePositions(newBoard);
+                    node.Children[i].Value = ratePositions(newBoard, node.CurrentPlayer);
                     leafs.AddLast(node.Children[i]);
                 }
                 else
@@ -135,7 +135,7 @@ namespace Warcaby
                     node.Value = node.Children[i].Value;
         }
 
-        protected short ratePositions(Game.Checker[] board)
+        protected short ratePositions(Game.Checker[] board, int currentPlayer)
         {
             return (short)random.Next(20);
         }

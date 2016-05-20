@@ -6,7 +6,7 @@ namespace Warcaby
 {
     class MinMax
     {
-        protected static readonly int CHILDREN = ProjectSettings.CHILDREN;
+        //protected static readonly int CHILDREN = ProjectSettings.CHILDREN;
         private static Random random = new Random();
         public int Depth { get; set; }
         public bool computerStarts { get; set; }
@@ -60,7 +60,8 @@ namespace Warcaby
             try
             {
                 DateTime before = DateTime.Now;
-                buildTree(root, Depth);
+                root.CurrentPlayer = game.CurrentPlayer;
+                buildTree(root, Depth, game.GetBoardCopy());
                 DateTime after = DateTime.Now;
                 string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
                 //MessageBox.Show(message);
@@ -75,23 +76,32 @@ namespace Warcaby
             }
         }
 
-        virtual protected void buildTree(Node node, int levelsLeft)
+        virtual protected void buildTree(Node node, int levelsLeft, Game.Checker[] board)
         {
             if(node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             
-            node.Children = new Node[CHILDREN];
-            for(int i = 0; i < CHILDREN; i++)
+            
+            var moves = Game.getPossibleMoves(node.CurrentPlayer, board, game.BoardSize);
+            node.Children = new Node[moves.Count];
+            for (int i = 0; i < moves.Count; i++)
             {
                 node.Children[i] = new Node();
                 node.Children[i].Parent = node;
                 node.Children[i].Value = -1;        //Nieobliczona wartość
-                if (levelsLeft <= 1)         //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
+                var newBoard = Game.GetBoardCopy(board);
+                Game.MoveChecker(moves[i], newBoard, game.BoardSize);
+                node.Children[i].Board = newBoard;
+                node.Children[i].CurrentPlayer = node.CurrentPlayer == 0 ? 1 : 0;
+                if (levelsLeft <= 1) //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
                 {
-                    node.Children[i].Value = ratePositions();
+                    node.Children[i].Value = ratePositions(newBoard);
                     leafs.AddLast(node.Children[i]);
-                } 
-                else buildTree(node.Children[i], levelsLeft - 1);
+                }
+                else
+                {
+                    buildTree(node.Children[i], levelsLeft - 1, newBoard);
+                }
             }
         }
 
@@ -101,10 +111,10 @@ namespace Warcaby
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             if (node.Children == null)      //Jeśli jesteśmy w liściu, kończymy procedurę
                 return;
-            for (int i = 0; i < CHILDREN; i++)
+            for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value == -1)
                     min(node.Children[i]);
-            for (int i = 0; i < CHILDREN; i++)
+            for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value > node.Value)
                     node.Value = node.Children[i].Value;
 
@@ -117,15 +127,15 @@ namespace Warcaby
             if (node.Children == null)      //Jeśli jesteśmy w liściu, kończymy procedurę
                 return;
             node.Value = Int16.MaxValue;
-            for (int i = 0; i < CHILDREN; i++)
+            for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value == -1)
                     max(node.Children[i]);
-            for (int i = 0; i < CHILDREN; i++)
+            for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value < node.Value)
                     node.Value = node.Children[i].Value;
         }
 
-        protected short ratePositions()
+        protected short ratePositions(Game.Checker[] board)
         {
             return (short)random.Next(20);
         }

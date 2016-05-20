@@ -18,5 +18,7 @@ namespace Warcaby
         public short Alfa { get; set; }
         public short Beta { get; set; }
         public bool Disabled { get; set; }
+        public int CurrentPlayer { get; set; }
+        public Game.Checker[] Board { get; set; }
     }
 }

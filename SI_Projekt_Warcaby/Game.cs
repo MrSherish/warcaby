@@ -46,6 +46,12 @@ namespace Warcaby
                 this.owner = owner;
                 this.isKing = false;
             }
+
+            public Checker(Checker original) //copy constructor
+            {
+                this.owner = original.owner;
+                this.isKing = original.isKing;
+            }
             public bool isKing;
             public int owner;
         }
@@ -148,16 +154,17 @@ namespace Warcaby
         }
 
         private Checker[] board; // plansza ma -1 w miejscach braku pionka. Pionki gracza 0 mają indeks 0, a gracza 1 - 1.
+                                 // pozycja na planszy to y*size + x
 
         public BoardDrawer boardDrawer;
 
-        public Checker[] Board
+        public Checker[] Board // UWAGA: ZWRACA TABLICĘ REFERENCJI!!! ~Krystian
         {
             get
             {
                 return board;
             }
-        }
+        } 
 
         private int size;
 
@@ -439,5 +446,209 @@ namespace Warcaby
 
             return ret;
         }
+
+
+        //funkcje static do użycia poza klasą game (np. w generowanym drzewie)
+        private static List<Point> enemiesAroundToKill(int px, int py, Checker[] board, int size)
+        {
+            Checker curr = board[py * size + px];
+            List<Point> ret = new List<Point>();
+            if (curr.isKing)
+            {
+
+            }
+            else
+            {
+                Checker target;
+                Point targetPoint = new Point(px - 1, py - 1);
+                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
+                {
+                    target = board[(py - 1) * size + px - 1];
+                    if (target != null && target.owner == 1 - curr.owner)
+                    {
+                        if (px - 2 >= 0 && py - 2 >= 0 && board[(py - 2) * size + (px - 2)] == null)
+                        {
+                            ret.Add(targetPoint);
+                        }
+                    }
+                }
+
+                targetPoint = new Point(px + 1, py - 1);
+                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
+                {
+                    target = board[(py - 1) * size + px + 1];
+                    if (target != null && target.owner == 1 - curr.owner)
+                    {
+                        if (px + 2 < size && py - 2 >= 0 && board[(py - 2) * size + (px + 2)] == null)
+                        {
+                            ret.Add(targetPoint);
+                        }
+                    }
+                }
+
+                targetPoint = new Point(px + 1, py + 1);
+                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
+                {
+                    target = board[(py + 1) * size + px + 1];
+
+                    if (target != null && target.owner == 1 - curr.owner)
+                    {
+                        if (px + 2 < size && py + 2 < size && board[(py + 2) * size + (px + 2)] == null)
+                        {
+                            ret.Add(targetPoint);
+                        }
+                    }
+                }
+
+                targetPoint = new Point(px - 1, py + 1);
+                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
+                {
+                    target = board[(py + 1) * size + px - 1];
+
+                    if (target != null && target.owner == 1 - curr.owner)
+                    {
+                        if (px - 2 >= 0 && py + 2 < size && board[(py + 2) * size + (px - 2)] == null)
+                        {
+                            ret.Add(targetPoint);
+                        }
+                    }
+                }
+
+            }
+            return ret;
+        }
+
+        public static List<Move> getPossibleMoves(int currentPlayer, Checker[] board, int size)
+        {
+            List<Move> ret = new List<Move>();
+            List<Move> retKill = new List<Move>();
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    if (board[y * size + x] != null && board[y * size + x].owner == currentPlayer)
+                    {
+                        List<Move> curr = getPossibleMovesForField(x, y, board, size);
+                        foreach (Move m in curr)
+                        {
+                            if (m.killing)
+                            {
+                                retKill.Add(m);
+                            }
+                            else
+                            {
+                                ret.Add(m);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (retKill.Count > 0)
+            {
+                return retKill;
+            }
+            return ret;
+        }
+        
+        public static List<Move> getPossibleMovesForField(int px, int py, Checker[] board, int size)
+        {
+            Checker checker = board[py * size + px];
+
+            if (checker == null)
+            {
+                return new List<Move>();
+            }
+
+            List<Move> ret = new List<Move>();
+
+            List<Point> enemies = enemiesAroundToKill(px, py, board, size);
+
+            Point curr = new Point(px, py);
+
+            if (enemies.Count > 0)
+            {
+                foreach (Point en in enemies)
+                {
+                    ret.Add(new Move(curr, new Point(en.X - (px - en.X), en.Y - (py - en.Y)), true));
+                }
+                return ret;
+            }
+            else
+            {
+                int tx, ty;
+                if (checker.owner == 0)
+                {
+                    tx = px + 1;
+                    ty = py + 1;
+                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                    {
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
+                    }
+                    tx = px - 1;
+                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                    {
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
+                    }
+                }
+                else
+                {
+                    tx = px + 1;
+                    ty = py - 1;
+                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                    {
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
+                    }
+                    tx = px - 1;
+                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                    {
+                        ret.Add(new Move(curr, new Point(tx, ty), false));
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public static void MoveChecker(Point from, Point to, Checker[] board, int size) //ta funkcja nie waliduje już ruchu, jednie przesuwa i zbija pionki. Narazie nie działa też dla "króla".
+        {
+            if (Math.Abs(from.X - to.X) > 1) //taki przeskok oznacza zabicie
+            {
+                board[(from.Y + ((to.Y - from.Y)) / 2) * size + from.X + ((to.X - from.X) / 2)] = null;
+            }
+            board[to.Y * size + to.X] = board[from.Y * size + from.X];
+            board[from.Y * size + from.X] = null;
+        }
+
+        public static void MoveChecker(Move m, Checker[] board, int size)
+        {
+            MoveChecker(m.From, m.To, board, size);
+        }
+
+        public static Checker[] GetBoardCopy(Checker[] board)
+        {
+            var toReturn = new Checker[board.Length];
+            var i = 0;
+            foreach (var checker in board)
+            {
+                toReturn[i] = new Checker(checker);
+            }
+
+            return toReturn;
+        }
+
+        public Checker[] GetBoardCopy()
+        {
+            var toReturn = new Checker[board.Length];
+            var i = 0;
+            foreach (var checker in board)
+            {
+                toReturn[i] = new Checker(checker);
+            }
+
+            return toReturn;
+        }
+
     }
 }

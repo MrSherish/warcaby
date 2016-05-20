@@ -14,6 +14,7 @@ namespace Warcaby
     {
         public short Value {get; set;}
         public Node[] Children;
+        public List<Game.Move> Moves;
         public Node Parent;
         public short Alfa { get; set; }
         public short Beta { get; set; }

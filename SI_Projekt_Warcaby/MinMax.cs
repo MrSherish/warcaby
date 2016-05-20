@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Warcaby
@@ -38,6 +39,18 @@ namespace Warcaby
                 //tymczasowo pierwszy możliwy ruch
                 //return game.getPossibleMoves(game.CurrentPlayer)[0];
                 // docelowo :
+                run();
+                var max = 0;
+                var index = 0;
+                for (int i = 0; i < root.Children.Length; ++i)
+                {
+                    if (root.Children[i].Value > max)
+                    {
+                        max = root.Children[i].Value;
+                        index = i;
+                    }
+                }
+                if (root.Moves.Count > 0) move = root.Moves[index];
                 return move;
             }
         }
@@ -57,23 +70,18 @@ namespace Warcaby
 
         virtual protected void runAlgorithm()
         {
-            try
-            {
-                DateTime before = DateTime.Now;
-                root.CurrentPlayer = game.CurrentPlayer;
-                buildTree(root, Depth, game.GetBoardCopy());
-                DateTime after = DateTime.Now;
-                string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
-                MessageBox.Show(message);
+            
+            DateTime before = DateTime.Now;
+            root.CurrentPlayer = game.CurrentPlayer;
+            buildTree(root, Depth, game.GetBoardCopy());
+            DateTime after = DateTime.Now;
+            string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
+            //MessageBox.Show(message);
                 
-                if (computerStarts)
-                    max(root);
-                else min(root);
-            }
-            catch (NullReferenceException e)
-            {
-                MessageBox.Show("Wyjatek: " + e.Message);
-            }
+            if (computerStarts)
+                max(root);
+            else min(root);
+            
         }
 
         virtual protected void buildTree(Node node, int levelsLeft, Game.Checker[] board)
@@ -84,6 +92,7 @@ namespace Warcaby
             
             var moves = Game.getPossibleMoves(node.CurrentPlayer, board, game.BoardSize);
             node.Children = new Node[moves.Count];
+            node.Moves = moves;
             for (int i = 0; i < moves.Count; i++)
             {
                 node.Children[i] = new Node();
@@ -137,7 +146,33 @@ namespace Warcaby
 
         protected short ratePositions(Game.Checker[] board, int currentPlayer)
         {
-            return (short)random.Next(20);
+            var points = 0;
+            short checkers = 0;
+            short kings = 0;
+            short checkersInFirstZone = 0;
+            short checkersInSecondZone = 0;
+            short canKill = 0;
+
+            for (var i = 0; i < board.Length; ++i)
+            {
+                if (board[i] == null) continue;
+                var posx = i%game.BoardSize;
+                var posy = i/game.BoardSize;
+                if (board[i].owner == currentPlayer)
+                {
+                    checkers++;
+                    if (Game.enemiesAroundToKill(posx, posy, board, game.BoardSize).Count > 0)
+                    {
+                        canKill++;
+                    }
+                }
+                if (board[i].isKing) kings++;
+
+            }
+            points += checkers*5 + kings * 50 + canKill*30;
+
+            //return (short)random.Next(20);
+            return (short) points;
         }
     }
 }

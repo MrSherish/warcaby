@@ -449,7 +449,7 @@ namespace Warcaby
 
 
         //funkcje static do użycia poza klasą game (np. w generowanym drzewie)
-        private static List<Point> enemiesAroundToKill(int px, int py, Checker[] board, int size)
+        public static List<Point> enemiesAroundToKill(int px, int py, Checker[] board, int size)
         {
             Checker curr = board[py * size + px];
             List<Point> ret = new List<Point>();
@@ -632,7 +632,9 @@ namespace Warcaby
             var i = 0;
             foreach (var checker in board)
             {
-                toReturn[i] = new Checker(checker);
+                if (checker != null) toReturn[i] = new Checker(checker);
+                else toReturn[i] = null;
+                i++;
             }
 
             return toReturn;
@@ -644,7 +646,9 @@ namespace Warcaby
             var i = 0;
             foreach (var checker in board)
             {
-                toReturn[i] = new Checker(checker);
+                if (checker != null) toReturn[i] = new Checker(checker);
+                else toReturn[i] = null;
+                i++;
             }
 
             return toReturn;

@@ -32,11 +32,13 @@ namespace Warcaby
                 this.killing = killing;
                 From = f;
                 To = t;
+                children = new List<Move>();
             }
 
             public bool killing;
             public Point From;
             public Point To;
+            public List<Move> children;
         }
 
         public class Checker
@@ -126,14 +128,26 @@ namespace Warcaby
                             ProcessInputLeftButton(selectedField);
                             return;
                         }
-                        List<Move> l = game.getPossibleMoves(game.currentPlayer);
+                        bool killing; //potrzebny parametr, ale w tym miejscu nieużywany;
+                        List<Move> l = game.getPossibleMoves(game.currentPlayer,out killing);
                         foreach (Move m in l)
                         {
                             if(m.From.Equals(selectedCheckerField) && m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
                             {
                                 game.MoveChecker(selectedCheckerField, selectedField);
-                                game.nextPlayer();
                                 currentState = State.selecting_checker;
+                                if (killing)
+                                {
+                                    List<Point> enemiesAround = game.enemiesAroundToKill(selectedField.X, selectedField.Y);
+                                    if(enemiesAround.Count==0)
+                                    {
+                                        game.nextPlayer();
+                                    }
+                                }
+                                else
+                                {
+                                    game.nextPlayer();
+                                }
                             }
                         }
                         break;
@@ -198,6 +212,7 @@ namespace Warcaby
 
         public void nextPlayer()
         {
+            boardDrawer.Refresh();
             int cond = checkWin();
             if (cond==0 || cond==1)
             {
@@ -208,9 +223,13 @@ namespace Warcaby
             if(players[currentPlayer] is AIPlayer)
             {
                 this.MoveChecker((players[currentPlayer] as AIPlayer).move());
-                nextPlayer();
+                currentPlayer = 1 - currentPlayer;
+                if (cond == 0 || cond == 1)
+                {
+                    MessageBox.Show("Gra zakonczona.");
+                    return;
+                }
             }
-            boardDrawer.Refresh();
         }
 
         public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows)
@@ -353,7 +372,7 @@ namespace Warcaby
             return ret;
         }
 
-        public List<Move> getPossibleMoves(int currentPlayer)
+        public List<Move> getPossibleMoves(int currentPlayer, out bool killing)
         {
             List<Move> ret = new List<Move>();
             List<Move> retKill = new List<Move>();
@@ -382,8 +401,10 @@ namespace Warcaby
 
             if(retKill.Count > 0)
             {
+                killing = true;
                 return retKill;
             }
+            killing = false;
             return ret;
         }
 
@@ -407,7 +428,12 @@ namespace Warcaby
             {
                 foreach(Point en in enemies)
                 {
-                    ret.Add(new Move(curr, new Point (en.X - (px - en.X), en.Y - (py - en.Y)),true));
+                    int newX = en.X - (px - en.X);
+                    int newY = en.Y - (py - en.Y);
+                    Move m = new Move(curr, new Point(newX, newY), true);
+                    bool k;
+                    m.children = getPossibleMovesForField(newX, newY);
+                    ret.Add(m);
                 }
                 return ret;
             }
@@ -443,10 +469,8 @@ namespace Warcaby
                     }
                 }
             }
-
             return ret;
         }
-
 
         //funkcje static do użycia poza klasą game (np. w generowanym drzewie)
         public static List<Point> enemiesAroundToKill(int px, int py, Checker[] board, int size)

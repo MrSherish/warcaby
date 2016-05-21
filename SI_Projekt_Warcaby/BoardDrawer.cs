@@ -50,7 +50,7 @@ namespace Warcaby
 
         public void Refresh()
         {
-            boardPanel.Invalidate();
+            boardPanel.Refresh();
         }
 
         //funkcja rysująca
@@ -128,7 +128,8 @@ namespace Warcaby
             if (e.Button.Equals(MouseButtons.Right))
             {
                 showPotentialMoves = true;
-                currentPossibleMoves = game.getPossibleMoves(game.CurrentPlayer);
+                bool k; //potrzebny parametr, ale w tym miejscu nieużywany;
+                currentPossibleMoves = game.getPossibleMoves(game.CurrentPlayer,out k);
                 Refresh();
             }
         }

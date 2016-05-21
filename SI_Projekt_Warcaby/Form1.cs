@@ -84,8 +84,20 @@ namespace Warcaby
             game.boardDrawer = drawer;
             if (!isP1Human.Checked)
             {
-                game.nextPlayer();
+                if(isP2Human.Checked)
+                {
+                    game.nextPlayer();
+                }
+                else
+                {
+                    while (game.checkWin() == -1)
+                    {
+                        game.nextPlayer();
+                        System.GC.Collect();
+                    }
+                }
             }
+            boardPanel.Refresh();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

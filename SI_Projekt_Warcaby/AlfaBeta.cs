@@ -26,7 +26,9 @@ namespace Warcaby
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             if (node.Children == null)
-                node.Value = ratePositions(node.Board, node.CurrentPlayer);
+                if (node.CurrentPlayer == game.CurrentPlayer)
+                    node.Value = ratePositions(node.Board, node.CurrentPlayer);
+                else node.Value = 0;
             else
             {
                 for (int i = 0; i < node.Children.Length; i++)
@@ -44,7 +46,7 @@ namespace Warcaby
             if (parent != null && node.Value < parent.Beta)
             {
                 parent.Beta = node.Value;
-                for (int i = 0; i < node.Children.Length; i++)
+                for (int i = 0; i < parent.Children.Length; i++)
                 {
                     if (parent.Children[i] != node)
                         parent.Children[i].Beta = node.Value;
@@ -59,7 +61,9 @@ namespace Warcaby
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             if (node.Children == null)
-                node.Value = ratePositions(node.Board, node.CurrentPlayer);
+                if (node.CurrentPlayer == game.CurrentPlayer)
+                    node.Value = ratePositions(node.Board, node.CurrentPlayer);
+                else node.Value = 0;
             else
             {
                 node.Value = Int16.MaxValue;
@@ -79,7 +83,7 @@ namespace Warcaby
             if (parent != null && node.Value > parent.Alfa)
             {
                 parent.Alfa = node.Value;
-                for (int i = 0; i < node.Children.Length; i++)
+                for (int i = 0; i < parent.Children.Length; i++)
                 {
                     if (parent.Children[i] != node)
                         parent.Children[i].Alfa = node.Value;
@@ -95,6 +99,7 @@ namespace Warcaby
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             var moves = Game.getPossibleMoves(node.CurrentPlayer, board, game.BoardSize);
             node.Children = new Node[moves.Count];
+            node.Moves = moves;
             for (int i = 0; i < moves.Count; i++)
             {
                 node.Children[i] = new Node();

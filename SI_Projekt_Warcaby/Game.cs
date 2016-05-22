@@ -32,13 +32,11 @@ namespace Warcaby
                 this.killing = killing;
                 From = f;
                 To = t;
-                children = new List<Move>();
             }
 
             public bool killing;
             public Point From;
             public Point To;
-            public List<Move> children;
         }
 
         public class Checker
@@ -128,28 +126,15 @@ namespace Warcaby
                             ProcessInputLeftButton(selectedField);
                             return;
                         }
-                        bool killing; //potrzebny parametr, ale w tym miejscu nieużywany;
-                        List<Move> l = game.getPossibleMoves(game.currentPlayer,out killing);
+                        List<Move> l = Game.getPossibleMoves(game.currentPlayer, game.board, game.size);
                         foreach (Move m in l)
                         {
                             if(m.From.Equals(selectedCheckerField) && m.To.Equals(selectedField))     //jedynie z możliwych do wyboru pól zwracanych do listy l
                             {
-                                game.MoveChecker(selectedCheckerField, selectedField);
+                                Game.MoveChecker(selectedCheckerField, selectedField,game.board,game.BoardSize);
                                 currentState = State.selecting_checker;
-                                if (killing)
-                                {
-                                    List<Point> enemiesAround = game.enemiesAroundToKill(selectedField.X, selectedField.Y);
-                                    if(enemiesAround.Count==0)
-                                    {
-                                        game.currentPlayer = 1 - game.currentPlayer;
-                                        game.nextPlayer();
-                                    }
-                                }
-                                else
-                                {
-                                    game.currentPlayer = 1 - game.currentPlayer;
-                                    game.nextPlayer();
-                                }
+                                game.currentPlayer = 1 - game.currentPlayer;
+                                game.nextPlayer();
                             }
                         }
                         break;
@@ -223,7 +208,7 @@ namespace Warcaby
             }
             if(players[currentPlayer] is AIPlayer)
             {
-                this.MoveChecker((players[currentPlayer] as AIPlayer).move());
+                Game.MoveChecker((players[currentPlayer] as AIPlayer).move(),this.board,this.size);
                 currentPlayer = 1 - currentPlayer;
                 if (cond == 0 || cond == 1)
                 {
@@ -288,7 +273,7 @@ namespace Warcaby
             }
         }
 
-        public void MoveChecker(Move m)
+        /*public void MoveChecker(Move m)
         {
             MoveChecker(m.From, m.To);
         }
@@ -302,188 +287,11 @@ namespace Warcaby
             board[to.Y * size + to.X] = board[from.Y * size + from.X];
             board[from.Y * size + from.X] = null;
         }
-
-        //zwraca liste pól z przeciwnikami dookoła. Warunki w if-ach są trochę skomplikowane, ale chyba działają poprawnie. Wbrew pozorm jest tu trochę case'ów :D
-        private List<Point> enemiesAroundToKill(int px, int py)
-        {
-            Checker curr = board[py * size + px];
-            List<Point> ret = new List<Point>();
-            if (curr.isKing)
-            {
-
-            }
-            else
-            {
-                Checker target;
-                Point targetPoint = new Point(px - 1, py - 1);
-                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y>=0 && targetPoint.Y<size)
-                {
-                    target = board[(py - 1) * size + px - 1];
-                    if (target != null && target.owner == 1 - curr.owner)
-                    {
-                        if (px - 2 >= 0 && py - 2 >=0 && board[(py - 2) * size + (px - 2)] == null)
-                        {
-                            ret.Add(targetPoint);
-                        }
-                    }
-                }
-
-                targetPoint = new Point(px + 1, py - 1);
-                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
-                {
-                    target = board[(py - 1) * size + px + 1];
-                    if (target != null && target.owner == 1 - curr.owner)
-                    {
-                        if (px + 2 < size && py - 2 >=0 && board[(py - 2) * size + (px + 2)] == null)
-                        {
-                            ret.Add(targetPoint);
-                        }
-                    }
-                }
-
-                targetPoint = new Point(px + 1, py + 1);
-                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
-                {
-                    target = board[(py + 1) * size + px + 1];
-
-                    if (target != null && target.owner == 1 - curr.owner)
-                    {
-                        if (px + 2 <size && py + 2 < size && board[(py+2) * size + (px+2)] == null)
-                        {
-                            ret.Add(targetPoint);
-                        }
-                    }
-                }
-
-                targetPoint = new Point(px - 1, py + 1);
-                if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
-                {
-                    target = board[(py + 1) * size + px - 1];
-
-                    if (target != null && target.owner == 1 - curr.owner)
-                    {
-                        if (px - 2 >= 0 && py + 2 < size && board[(py + 2) * size + (px - 2)] == null)
-                        {
-                            ret.Add(targetPoint);
-                        }
-                    }
-                }
-
-            }
-            return ret;
-        }
-
-        public List<Move> getPossibleMoves(int currentPlayer, out bool killing)
-        {
-            List<Move> ret = new List<Move>();
-            List<Move> retKill = new List<Move>();
-
-            for(int y=0;y< size;y++)
-            {
-                for(int x=0;x< size;x++)
-                {
-                    if(board[y * size + x]!=null && board[y*size+x].owner == currentPlayer)
-                    {
-                        List<Move> curr = getPossibleMovesForField(x, y);
-                        foreach(Move m in curr)
-                        {
-                            if(m.killing)
-                            {
-                                retKill.Add(m);
-                            }
-                            else
-                            {
-                                ret.Add(m);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(retKill.Count > 0)
-            {
-                killing = true;
-                return retKill;
-            }
-            killing = false;
-            return ret;
-        }
-
-        //zwraca listę możliwych to "staniecia" pól, wokół podanego pola. Uwzględnia konieczność bicia, gdy wokół są przeciwnicy.
-        public List<Move> getPossibleMovesForField(int px,int py)
-        {
-            Checker checker = board[py * size + px];
-
-            if(checker == null)
-            {
-                return new List<Move>();
-            }
-
-            List<Move> ret = new List<Move>();
-
-            List<Point> enemies = enemiesAroundToKill(px, py);
-
-            Point curr = new Point(px, py);
-
-            if(enemies.Count>0)
-            {
-                foreach(Point en in enemies)
-                {
-                    int newX = en.X - (px - en.X);
-                    int newY = en.Y - (py - en.Y);
-                    Move m = new Move(curr, new Point(newX, newY), true);
-                    bool k;
-                    m.children = getPossibleMovesForField(newX, newY);
-                    ret.Add(m);
-                }
-                return ret;
-            }
-            else
-            {
-                int tx, ty;
-                if(checker.owner==0)
-                {
-                   tx = px + 1;
-                   ty = py + 1;
-                   if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
-                   {
-                        ret.Add(new Move(curr,new Point(tx, ty), false));
-                   }
-                   tx = px - 1;
-                   if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
-                   {
-                        ret.Add(new Move(curr, new Point(tx, ty), false));
-                    }
-                }
-                else
-                {
-                    tx = px + 1;
-                    ty = py - 1;
-                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
-                    {
-                        ret.Add(new Move(curr, new Point(tx, ty), false));
-                    }
-                    tx = px - 1;
-                    if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
-                    {
-                        ret.Add(new Move(curr, new Point(tx, ty), false));
-                    }
-                }
-            }
-            return ret;
-        }
-
-        //funkcje static do użycia poza klasą game (np. w generowanym drzewie)
+        */
         public static List<Point> enemiesAroundToKill(int px, int py, Checker[] board, int size)
         {
             Checker curr = board[py * size + px];
             List<Point> ret = new List<Point>();
-            if (curr.isKing)
-            {
-
-            }
-            else
-            {
                 Checker target;
                 Point targetPoint = new Point(px - 1, py - 1);
                 if (targetPoint.X >= 0 && targetPoint.X < size && targetPoint.Y >= 0 && targetPoint.Y < size)
@@ -538,8 +346,6 @@ namespace Warcaby
                         }
                     }
                 }
-
-            }
             return ret;
         }
 
@@ -603,6 +409,37 @@ namespace Warcaby
             else
             {
                 int tx, ty;
+                if(checker.isKing)
+                {
+                    if (checker.owner == 0)
+                    {
+                        tx = px + 1;
+                        ty = py - 1;
+                        if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                        {
+                            ret.Add(new Move(curr, new Point(tx, ty), false));
+                        }
+                        tx = px - 1;
+                        if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                        {
+                            ret.Add(new Move(curr, new Point(tx, ty), false));
+                        }
+                    }
+                    else
+                    {
+                        tx = px + 1;
+                        ty = py + 1;
+                        if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                        {
+                            ret.Add(new Move(curr, new Point(tx, ty), false));
+                        }
+                        tx = px - 1;
+                        if (tx >= 0 && tx < size && ty >= 0 && ty < size && board[ty * size + tx] == null)
+                        {
+                            ret.Add(new Move(curr, new Point(tx, ty), false));
+                        }
+                    }
+                }
                 if (checker.owner == 0)
                 {
                     tx = px + 1;
@@ -638,9 +475,18 @@ namespace Warcaby
 
         public static void MoveChecker(Point from, Point to, Checker[] board, int size) //ta funkcja nie waliduje już ruchu, jednie przesuwa i zbija pionki. Narazie nie działa też dla "króla".
         {
+            Checker curr = board[from.Y * size + from.X];
             if (Math.Abs(from.X - to.X) > 1) //taki przeskok oznacza zabicie
             {
                 board[(from.Y + ((to.Y - from.Y)) / 2) * size + from.X + ((to.X - from.X) / 2)] = null;
+            }
+            if(to.Y == size-1 && curr.owner==0)
+            {
+                curr.isKing = true;
+            }
+            else if(to.Y == 0 && curr.owner==1)
+            {
+                curr.isKing = true;
             }
             board[to.Y * size + to.X] = board[from.Y * size + from.X];
             board[from.Y * size + from.X] = null;

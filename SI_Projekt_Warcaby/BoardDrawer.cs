@@ -129,7 +129,7 @@ namespace Warcaby
             {
                 showPotentialMoves = true;
                 bool k; //potrzebny parametr, ale w tym miejscu nieużywany;
-                currentPossibleMoves = game.getPossibleMoves(game.CurrentPlayer,out k);
+                currentPossibleMoves = Game.getPossibleMoves(game.CurrentPlayer,game.Board,game.BoardSize);
                 Refresh();
             }
         }

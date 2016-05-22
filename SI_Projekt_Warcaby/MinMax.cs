@@ -73,6 +73,7 @@ namespace Warcaby
             
             DateTime before = DateTime.Now;
             root.CurrentPlayer = game.CurrentPlayer;
+            Depth = 4;
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
@@ -104,7 +105,9 @@ namespace Warcaby
                 node.Children[i].CurrentPlayer = node.CurrentPlayer == 0 ? 1 : 0;
                 if (levelsLeft <= 1) //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
                 {
-                    node.Children[i].Value = ratePositions(newBoard, node.CurrentPlayer);
+                    if (node.CurrentPlayer != game.CurrentPlayer)
+                        node.Children[i].Value = ratePositions(newBoard, node.CurrentPlayer);
+                    else node.Children[i].Value = 0;
                     leafs.AddLast(node.Children[i]);
                 }
                 else
@@ -149,9 +152,10 @@ namespace Warcaby
             var points = 0;
             short checkers = 0;
             short kings = 0;
-            short checkersInFirstZone = 0;
-            short checkersInSecondZone = 0;
             short canKill = 0;
+            short pointsForLevel = 0;
+
+            var boardSize = game.BoardSize;
 
             for (var i = 0; i < board.Length; ++i)
             {
@@ -165,11 +169,19 @@ namespace Warcaby
                     {
                         canKill++;
                     }
+                    if (currentPlayer == 0)
+                    {
+                        pointsForLevel += (short) posy;
+                    }
+                    else
+                    {
+                        pointsForLevel += (short) (boardSize - posy - 1);
+                    }
                 }
                 if (board[i].isKing) kings++;
 
             }
-            points += checkers*5 + kings * 50 + canKill*30;
+            points += checkers*5 + kings * 50 + canKill*10 + pointsForLevel*2;
 
             //return (short)random.Next(20);
             return (short) points;

@@ -141,11 +141,13 @@ namespace Warcaby
                                     List<Point> enemiesAround = game.enemiesAroundToKill(selectedField.X, selectedField.Y);
                                     if(enemiesAround.Count==0)
                                     {
+                                        game.currentPlayer = 1 - game.currentPlayer;
                                         game.nextPlayer();
                                     }
                                 }
                                 else
                                 {
+                                    game.currentPlayer = 1 - game.currentPlayer;
                                     game.nextPlayer();
                                 }
                             }
@@ -219,7 +221,6 @@ namespace Warcaby
                 MessageBox.Show("Gra zakonczona.");
                 return;
             }
-            currentPlayer = 1 - currentPlayer;
             if(players[currentPlayer] is AIPlayer)
             {
                 this.MoveChecker((players[currentPlayer] as AIPlayer).move());

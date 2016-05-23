@@ -9,7 +9,7 @@ namespace Warcaby
     {
         //protected static readonly int CHILDREN = ProjectSettings.CHILDREN;
         private static Random random = new Random();
-        public int Depth { get; set; }
+        public int Depth { get; set; } = 6;
         public bool computerStarts { get; set; }
         
         protected Node root = new Node();
@@ -73,7 +73,7 @@ namespace Warcaby
             
             DateTime before = DateTime.Now;
             root.CurrentPlayer = game.CurrentPlayer;
-            Depth = 4;
+            //Depth = 6;
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
@@ -154,6 +154,7 @@ namespace Warcaby
             short kings = 0;
             short canKill = 0;
             short pointsForLevel = 0;
+            short atTheEdge = 0;
 
             var boardSize = game.BoardSize;
 
@@ -175,13 +176,16 @@ namespace Warcaby
                     }
                     else
                     {
-                        pointsForLevel += (short) (boardSize - posy - 1);
+                        if (!board[i].isKing) pointsForLevel += (short) (boardSize - posy - 1);
+                    }
+                    if (board[i].isKing) kings++;
+                    if (posx == 0 || posx == boardSize - 1 || posy == 0 || posy == boardSize - 1)
+                    {
+                        atTheEdge++;
                     }
                 }
-                if (board[i].isKing) kings++;
-
             }
-            points += checkers*5 + kings * 50 + canKill*10 + pointsForLevel*2;
+            points += checkers*10 + kings * 50 + canKill*30 + pointsForLevel + atTheEdge*2;
 
             //return (short)random.Next(20);
             return (short) points;

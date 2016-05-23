@@ -114,6 +114,8 @@ namespace Warcaby
                 {
                     buildTree(node.Children[i], levelsLeft - 1, newBoard);
                 }
+                node.Children[i].Board = null; //RAM OPTIMIZATION, UGLY AS F**K
+                //Garbage Collector is going to kill us
             }
         }
 

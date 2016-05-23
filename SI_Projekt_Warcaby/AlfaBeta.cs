@@ -26,9 +26,11 @@ namespace Warcaby
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             if (node.Children == null)
+            {
                 if (node.CurrentPlayer == game.CurrentPlayer)
                     node.Value = ratePositions(node.Board, node.CurrentPlayer);
                 else node.Value = 0;
+            }
             else
             {
                 for (int i = 0; i < node.Children.Length; i++)
@@ -61,9 +63,11 @@ namespace Warcaby
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             if (node.Children == null)
+            {
                 if (node.CurrentPlayer == game.CurrentPlayer)
                     node.Value = ratePositions(node.Board, node.CurrentPlayer);
                 else node.Value = 0;
+            }
             else
             {
                 node.Value = Int16.MaxValue;
@@ -78,7 +82,7 @@ namespace Warcaby
                     if (node.Children[i].Value < node.Value && !node.Children[i].Disabled)
                         node.Value = node.Children[i].Value;
             }
-            
+
             Node parent = node.Parent;
             if (parent != null && node.Value > parent.Alfa)
             {

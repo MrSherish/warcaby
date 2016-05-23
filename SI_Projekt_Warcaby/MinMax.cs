@@ -74,6 +74,7 @@ namespace Warcaby
             DateTime before = DateTime.Now;
             root.CurrentPlayer = game.CurrentPlayer;
             //Depth = 6;
+            root.Moves = Game.getPossibleMoves(root.CurrentPlayer, game.GetBoardCopy(), game.BoardSize);
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
@@ -93,7 +94,7 @@ namespace Warcaby
             
             var moves = Game.getPossibleMoves(node.CurrentPlayer, board, game.BoardSize);
             node.Children = new Node[moves.Count];
-            node.Moves = moves;
+            //node.Moves = moves; //We need moves only for root
             for (int i = 0; i < moves.Count; i++)
             {
                 node.Children[i] = new Node();

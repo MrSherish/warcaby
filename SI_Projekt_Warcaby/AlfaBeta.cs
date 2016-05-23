@@ -30,6 +30,7 @@ namespace Warcaby
                 if (node.CurrentPlayer == game.CurrentPlayer)
                     node.Value = ratePositions(node.Board, node.CurrentPlayer);
                 else node.Value = 0;
+                
             }
             else
             {
@@ -54,7 +55,7 @@ namespace Warcaby
                         parent.Children[i].Beta = node.Value;
                 }
             }
-                
+            node.Board = null; //ugly memory optimization 
 
         }
 
@@ -93,8 +94,8 @@ namespace Warcaby
                         parent.Children[i].Alfa = node.Value;
                 }
             }
-                
-            
+            node.Board = null; //ugly memory optimization   
+
         }
 
         protected override void buildTree(Node node, int levelsLeft, Game.Checker[] board)
@@ -103,7 +104,7 @@ namespace Warcaby
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
             var moves = Game.getPossibleMoves(node.CurrentPlayer, board, game.BoardSize);
             node.Children = new Node[moves.Count];
-            node.Moves = moves;
+            //node.Moves = moves; //We don't need to store available moves for every node, just for the root
             for (int i = 0; i < moves.Count; i++)
             {
                 node.Children[i] = new Node();

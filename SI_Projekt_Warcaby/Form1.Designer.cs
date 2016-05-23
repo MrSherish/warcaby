@@ -40,8 +40,11 @@
             this.labelPlayer2 = new System.Windows.Forms.Label();
             this.comboBoxAlgP1 = new System.Windows.Forms.ComboBox();
             this.comboBoxAlgP2 = new System.Windows.Forms.ComboBox();
+            this.treeDepth = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.boardSizeSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rowsOfCheckers)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).BeginInit();
             this.SuspendLayout();
             // 
             // boardPanel
@@ -202,11 +205,44 @@
             this.comboBoxAlgP2.Size = new System.Drawing.Size(121, 21);
             this.comboBoxAlgP2.TabIndex = 13;
             // 
+            // treeDepth
+            // 
+            this.treeDepth.Location = new System.Drawing.Point(313, 90);
+            this.treeDepth.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.treeDepth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.treeDepth.Name = "treeDepth";
+            this.treeDepth.Size = new System.Drawing.Size(56, 20);
+            this.treeDepth.TabIndex = 14;
+            this.treeDepth.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(248, 92);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 13);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Tree depth";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 762);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.treeDepth);
             this.Controls.Add(this.comboBoxAlgP2);
             this.Controls.Add(this.comboBoxAlgP1);
             this.Controls.Add(this.labelPlayer2);
@@ -224,6 +260,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.boardSizeSelector)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rowsOfCheckers)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -243,6 +280,8 @@
         private System.Windows.Forms.Label labelPlayer2;
         private System.Windows.Forms.ComboBox comboBoxAlgP1;
         private System.Windows.Forms.ComboBox comboBoxAlgP2;
+        internal System.Windows.Forms.NumericUpDown treeDepth;
+        private System.Windows.Forms.Label label1;
     }
 }
 

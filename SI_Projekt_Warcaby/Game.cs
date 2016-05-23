@@ -154,6 +154,8 @@ namespace Warcaby
             }
         }
 
+        public int TreeDepth { get; set; }
+
         private Checker[] board; // plansza ma -1 w miejscach braku pionka. Pionki gracza 0 mają indeks 0, a gracza 1 - 1.
                                  // pozycja na planszy to y*size + x
 
@@ -218,8 +220,9 @@ namespace Warcaby
             }
         }
 
-        public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows)
+        public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows, int treeDepth)
         {
+            TreeDepth = treeDepth;
             this.size = size;
             board = new Checker[size*size];
             //inicjalizacja planszy

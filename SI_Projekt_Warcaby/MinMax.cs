@@ -73,7 +73,7 @@ namespace Warcaby
             
             DateTime before = DateTime.Now;
             root.CurrentPlayer = game.CurrentPlayer;
-            //Depth = 6;
+            Depth = game.TreeDepth;
             root.Moves = Game.getPossibleMoves(root.CurrentPlayer, game.GetBoardCopy(), game.BoardSize);
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;

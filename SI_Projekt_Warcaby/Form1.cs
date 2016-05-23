@@ -79,7 +79,7 @@ namespace Warcaby
                     p2 = Game.Alhorithms.AlfaBeta;
                 }
             }
-            game = new Game(p1, p2,Decimal.ToInt32(boardSizeSelector.Value), Decimal.ToInt32(rowsOfCheckers.Value));
+            game = new Game(p1, p2,Decimal.ToInt32(boardSizeSelector.Value), Decimal.ToInt32(rowsOfCheckers.Value), Decimal.ToInt32(treeDepth.Value));
             drawer = new BoardDrawer(game, boardPanel,Decimal.ToInt32(boardSizeSelector.Value));
             game.boardDrawer = drawer;
             if (!isP1Human.Checked)

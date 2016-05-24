@@ -9,11 +9,12 @@ namespace Warcaby
     {
         //protected static readonly int CHILDREN = ProjectSettings.CHILDREN;
         private static Random random = new Random();
-        public int Depth { get; set; } = 6;
+        public int Depth { get; set; }
         public bool computerStarts { get; set; }
         
         protected Node root = new Node();
         private LinkedList<Node> leafs = new LinkedList<Node>();
+        protected int numOfCheckedLeafs = 0; // Liczenie, ile liści sprawdzamy dla mini maxa i alfa bety
 
         /// <summary>
         /// Konstruktor ustawiajacy grę
@@ -78,7 +79,8 @@ namespace Warcaby
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
-            //MessageBox.Show(message);
+            if(!(this is AlfaBeta))
+                MessageBox.Show("MiniMax, liczba liści: " + numOfCheckedLeafs);
                 
             if (computerStarts)
                 max(root);
@@ -152,6 +154,7 @@ namespace Warcaby
 
         protected short ratePositions(Game.Checker[] board, int currentPlayer)
         {
+            numOfCheckedLeafs++;
             var points = 0;
             short checkers = 0;
             short kings = 0;

@@ -263,7 +263,7 @@ namespace Warcaby
             else
             {
                 players[0] = new AIPlayer(this, p1);
-                currentPlayer = 1;
+                //currentPlayer = 1;
                 // bot here
             }
         }

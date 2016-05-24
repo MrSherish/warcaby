@@ -127,5 +127,10 @@ namespace Warcaby
                 comboBoxAlgP2.Visible = true;
             }
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            game.ToggleDisplayingNumberOfLeafs();
+        }
     }
 }

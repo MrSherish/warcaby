@@ -11,6 +11,7 @@ namespace Warcaby
 {
     class Game // note : narazie nie zaimplementowałem jeszcze "damek". Obsługa sterowania: Klikamy na pionek (zaczyna czerwony), następnie na pole. Jeszcze dorobię jakieś oznaczenia, ze wybrany 
     {
+        public bool displayNumber { get; private set; }
         public enum Alhorithms
         {
             Human,
@@ -222,6 +223,7 @@ namespace Warcaby
 
         public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows, int treeDepth)
         {
+            this.displayNumber = false;
             TreeDepth = treeDepth;
             this.size = size;
             board = new Checker[size*size];
@@ -528,5 +530,10 @@ namespace Warcaby
             return toReturn;
         }
 
+
+        public void ToggleDisplayingNumberOfLeafs()
+        {
+            this.displayNumber = !this.displayNumber;
+        }
     }
 }

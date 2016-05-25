@@ -41,7 +41,7 @@ namespace Warcaby
 
         }
        
-        internal void RecursivePopulate(Node root, TreeNode treenode, TreeNode to_select_in_tree, Node to_select, int depth, bool ab)
+        /*internal void RecursivePopulate(Node root, TreeNode treenode, TreeNode to_select_in_tree, Node to_select, int depth, bool ab)
         {
             int length;
             if (root.Children == null) length = 1;
@@ -78,9 +78,9 @@ namespace Warcaby
                     
                 }
             }
-        }
+        }*/
 
-        /*
+        
         internal void RecursivePopulate(Node root, TreeNode treenode, TreeNode to_select_in_tree, Node to_select, int depth, bool ab)
         {
             int length;
@@ -90,13 +90,13 @@ namespace Warcaby
             {
                 
                 TreeNode node = null;
-                /*
+                
                 if (root == to_select)
                 {
-                    if (root.Value ==95)
+                    /*if (root.Value ==95)
                     {
                         int c = 45;
-                    }
+                    }*/
                     node = new TreeNode(">>>> " + root.Value.ToString() + " <<<<");
                     //if (root.isLost == false && ab == true) node.ForeColor = Color.Red;
                     node.ForeColor = Color.White;
@@ -112,7 +112,7 @@ namespace Warcaby
                     RecursivePopulate(root.Children[i], node, to_select_in_tree, to_select, depth - 1,ab);
             }
         }
-*/
+
         internal Node RecursiveMax(Node root, int depth)
         {
             while (root.ChosenOne != null && depth>0)

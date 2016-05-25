@@ -12,6 +12,6 @@ namespace Warcaby
         public static readonly int CHILDREN = 8;
         public static readonly int DEPTH = 7;
         public static readonly int TREE_VIEW_DEPTH = 2; //3;
-        public static readonly int SPEED = 5000;
+        public static readonly int SPEED = 1000;
     }
 }

@@ -390,12 +390,12 @@ namespace Warcaby
             allrets.AddRange(retKill);
             allrets.AddRange(ret);
 
-            /*if (retKill.Count > 0)
+            if (retKill.Count > 0)
             {
                 return retKill;
             }
-            return ret;*/
-            return allrets;
+            return ret;
+            //return allrets;
         }
         
         public static List<Move> getPossibleMovesForField(int px, int py, Checker[] board, int size)

@@ -13,6 +13,7 @@ namespace Warcaby
     {
         protected Form2 treeDisplayer = null;
 
+        public bool displayNumber { get; private set; }
         public enum Alhorithms
         {
             Human,
@@ -268,7 +269,7 @@ namespace Warcaby
             else
             {
                 players[0] = new AIPlayer(this, p1, treeDisplayer);
-                currentPlayer = 1;
+                //currentPlayer = 1;
                 // bot here
             }
         }
@@ -539,5 +540,10 @@ namespace Warcaby
             return toReturn;
         }
 
+
+        public void ToggleDisplayingNumberOfLeafs()
+        {
+            this.displayNumber = !this.displayNumber;
+        }
     }
 }

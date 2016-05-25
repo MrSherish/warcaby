@@ -16,6 +16,7 @@ namespace Warcaby
 
         protected Node root = new Node();
         private LinkedList<Node> leafs = new LinkedList<Node>();
+        protected int numOfCheckedLeafs = 0; // Liczenie, ile liści sprawdzamy dla mini maxa i alfa bety
 
         /// <summary>
         /// Konstruktor ustawiajacy grę
@@ -82,7 +83,8 @@ namespace Warcaby
             buildTree(root, Depth, game.GetBoardCopy());
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
-            //MessageBox.Show(message);
+            if(!(this is AlfaBeta))
+                MessageBox.Show("MiniMax, liczba liści: " + numOfCheckedLeafs);
                 
             if (computerStarts)
                 max(root);
@@ -111,8 +113,8 @@ namespace Warcaby
                 if (levelsLeft <= 1) //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
                 {
                     if (node.CurrentPlayer != game.CurrentPlayer)
-                        node.Children[i].Value = ratePositions(newBoard, node.CurrentPlayer);
-                    else node.Children[i].Value = 0;
+                        node.Children[i].Value = ratePositions(newBoard, node.Children[i].CurrentPlayer); //care pls, maybe node.CurrentPlayer
+                    else node.Children[i].Value = (short)-ratePositions(newBoard, node.Children[i].CurrentPlayer);
                     leafs.AddLast(node.Children[i]);
                 }
                 else
@@ -162,6 +164,7 @@ namespace Warcaby
 
         protected short ratePositions(Game.Checker[] board, int currentPlayer)
         {
+            numOfCheckedLeafs++;
             var points = 0;
             short checkers = 0;
             short kings = 0;

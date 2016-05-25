@@ -42,6 +42,7 @@
             this.comboBoxAlgP2 = new System.Windows.Forms.ComboBox();
             this.treeDepth = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.boardSizeSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rowsOfCheckers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).BeginInit();
@@ -236,11 +237,24 @@
             this.label1.TabIndex = 15;
             this.label1.Text = "Tree depth";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBox1.Location = new System.Drawing.Point(375, 93);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(135, 17);
+            this.checkBox1.TabIndex = 16;
+            this.checkBox1.Text = "Observe Num. of Leafs";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 762);
+            this.ClientSize = new System.Drawing.Size(584, 742);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.treeDepth);
             this.Controls.Add(this.comboBoxAlgP2);
@@ -282,6 +296,7 @@
         private System.Windows.Forms.ComboBox comboBoxAlgP2;
         internal System.Windows.Forms.NumericUpDown treeDepth;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Warcaby
 {
@@ -20,6 +21,7 @@ namespace Warcaby
             root.Alfa = Int16.MinValue;
             root.Beta = Int16.MaxValue;
             base.runAlgorithm();
+            MessageBox.Show("AlfaBeta, liczba liści: " + numOfCheckedLeafs);
         }
         protected override void max(Node node)
         {

@@ -51,6 +51,7 @@ namespace Warcaby
         public void Refresh()
         {
             boardPanel.Refresh();
+
         }
 
         //funkcja rysująca

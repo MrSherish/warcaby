@@ -12,6 +12,7 @@ namespace Warcaby
 {
     public partial class Form1 : Form
     {
+        protected Form2 treeDisplayer = null;
         private BoardDrawer drawer;
         private Game game;
         public Form1()
@@ -22,6 +23,8 @@ namespace Warcaby
             //maksymalna liczba rzędów pionków musi byc mniejsza od połowy wielksci planszy
             this.rowsOfCheckers.Value = 1;
             this.rowsOfCheckers.Maximum = this.boardSizeSelector.Value/2 - 1;
+            this.treeDisplayer = new Form2();
+            treeDisplayer.Show();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -79,7 +82,7 @@ namespace Warcaby
                     p2 = Game.Alhorithms.AlfaBeta;
                 }
             }
-            game = new Game(p1, p2,Decimal.ToInt32(boardSizeSelector.Value), Decimal.ToInt32(rowsOfCheckers.Value), Decimal.ToInt32(treeDepth.Value));
+            game = new Game(p1, p2,Decimal.ToInt32(boardSizeSelector.Value), Decimal.ToInt32(rowsOfCheckers.Value), Decimal.ToInt32(treeDepth.Value), treeDisplayer);
             drawer = new BoardDrawer(game, boardPanel,Decimal.ToInt32(boardSizeSelector.Value));
             game.boardDrawer = drawer;
             if (!isP1Human.Checked)

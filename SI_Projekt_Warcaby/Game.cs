@@ -11,6 +11,8 @@ namespace Warcaby
 {
     class Game // note : narazie nie zaimplementowałem jeszcze "damek". Obsługa sterowania: Klikamy na pionek (zaczyna czerwony), następnie na pole. Jeszcze dorobię jakieś oznaczenia, ze wybrany 
     {
+        protected Form2 treeDisplayer = null;
+
         public enum Alhorithms
         {
             Human,
@@ -71,15 +73,16 @@ namespace Warcaby
         {
             private MinMax algorithm;
 
-            public AIPlayer(Game g, Game.Alhorithms alg) : base(g)
+            public AIPlayer(Game g, Game.Alhorithms alg, Form2 d)
+                : base(g)
             {
                 if(alg==Game.Alhorithms.Minimax)
                 {
-                    algorithm = new MinMax(g);
+                    algorithm = new MinMax(g,d);
                 }
                 if(alg == Game.Alhorithms.AlfaBeta)
                 {
-                    algorithm = new AlfaBeta(g);
+                    algorithm = new AlfaBeta(g,d);
                 }
                 if(alg == Game.Alhorithms.Human)
                 {
@@ -211,6 +214,7 @@ namespace Warcaby
             if(players[currentPlayer] is AIPlayer)
             {
                 Game.MoveChecker((players[currentPlayer] as AIPlayer).move(),this.board,this.size);
+                System.Threading.Thread.Sleep(ProjectSettings.SPEED);
                 currentPlayer = 1 - currentPlayer;
                 if (cond == 0 || cond == 1)
                 {
@@ -220,8 +224,9 @@ namespace Warcaby
             }
         }
 
-        public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows, int treeDepth)
+        public Game(Alhorithms p1, Alhorithms p2, int size, int checkersRows, int treeDepth, Form2 displayer)
         {
+            this.treeDisplayer = displayer;
             TreeDepth = treeDepth;
             this.size = size;
             board = new Checker[size*size];
@@ -253,7 +258,7 @@ namespace Warcaby
             }
             else
             {
-                players[1] = new AIPlayer(this, p2);
+                players[1] = new AIPlayer(this, p2, treeDisplayer);
                 // bot here
             }
             if (p1 == Alhorithms.Human)
@@ -262,7 +267,7 @@ namespace Warcaby
             }
             else
             {
-                players[0] = new AIPlayer(this, p1);
+                players[0] = new AIPlayer(this, p1, treeDisplayer);
                 currentPlayer = 1;
                 // bot here
             }
@@ -379,11 +384,17 @@ namespace Warcaby
                 }
             }
 
-            if (retKill.Count > 0)
+            List<Move> allrets = new List<Move>(retKill.Count +
+                                    ret.Count);
+            allrets.AddRange(retKill);
+            allrets.AddRange(ret);
+
+            /*if (retKill.Count > 0)
             {
                 return retKill;
             }
-            return ret;
+            return ret;*/
+            return allrets;
         }
         
         public static List<Move> getPossibleMovesForField(int px, int py, Checker[] board, int size)

@@ -9,8 +9,8 @@ namespace Warcaby
         /// <summary>
         /// Wymagany konstruktor
         /// </summary>
-        public AlfaBeta(Game g)
-            :base(g)
+        public AlfaBeta(Game g, Form2 displayer)
+            : base(g, displayer)
         {
 
         }
@@ -25,6 +25,7 @@ namespace Warcaby
         {
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
+            node.isLost = true;
             if (node.Children == null)
             {
                 if (node.CurrentPlayer == game.CurrentPlayer)
@@ -43,7 +44,10 @@ namespace Warcaby
                 }
                 for (int i = 0; i < node.Children.Length; i++)
                     if (node.Children[i].Value > node.Value && !node.Children[i].Disabled)
+                    {
                         node.Value = node.Children[i].Value;
+                        node.ChosenOne = node.Children[i];
+                    }
             }
             Node parent = node.Parent;
             if (parent != null && node.Value < parent.Beta)
@@ -63,6 +67,7 @@ namespace Warcaby
         {
             if (node == null)
                 throw new NullReferenceException("Niezainicjalizowany wierzcholek.");
+            node.isLost = true;
             if (node.Children == null)
             {
                 if (node.CurrentPlayer == game.CurrentPlayer)
@@ -81,7 +86,10 @@ namespace Warcaby
                 }
                 for (int i = 0; i < node.Children.Length; i++)
                     if (node.Children[i].Value < node.Value && !node.Children[i].Disabled)
+                    {
                         node.Value = node.Children[i].Value;
+                        node.ChosenOne = node.Children[i];
+                    }
             }
 
             Node parent = node.Parent;

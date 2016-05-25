@@ -9,17 +9,21 @@ namespace Warcaby
     {
         //protected static readonly int CHILDREN = ProjectSettings.CHILDREN;
         private static Random random = new Random();
-        public int Depth { get; set; } = 6;
+        public int Depth { get; set; }
         public bool computerStarts { get; set; }
-        
+
+        public Form2 treeDisplayer = null;
+
         protected Node root = new Node();
         private LinkedList<Node> leafs = new LinkedList<Node>();
 
         /// <summary>
         /// Konstruktor ustawiajacy grę
         /// </summary>
-        public MinMax(Game game)
+        public MinMax(Game game, Form2 displayer)
         {
+            //this.Depth = ProjectSettings.DEPTH;
+            this.treeDisplayer = displayer;
             this.game = game;
         }
 
@@ -83,7 +87,7 @@ namespace Warcaby
             if (computerStarts)
                 max(root);
             else min(root);
-            
+            treeDisplayer.Populate(root);   
         }
 
         virtual protected void buildTree(Node node, int levelsLeft, Game.Checker[] board)
@@ -131,7 +135,10 @@ namespace Warcaby
                     min(node.Children[i]);
             for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value > node.Value)
+                {
                     node.Value = node.Children[i].Value;
+                    node.ChosenOne = node.Children[i];
+                }
 
         }
 
@@ -147,7 +154,10 @@ namespace Warcaby
                     max(node.Children[i]);
             for (int i = 0; i < node.Children.Length; i++)
                 if (node.Children[i].Value < node.Value)
+                {
                     node.Value = node.Children[i].Value;
+                    node.ChosenOne = node.Children[i];
+                }
         }
 
         protected short ratePositions(Game.Checker[] board, int currentPlayer)

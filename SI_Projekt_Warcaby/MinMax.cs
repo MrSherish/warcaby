@@ -109,8 +109,8 @@ namespace Warcaby
                 if (levelsLeft <= 1) //Inicjalizowanie liście - ostatni poziom głębokości w drzewie
                 {
                     if (node.CurrentPlayer != game.CurrentPlayer)
-                        node.Children[i].Value = ratePositions(newBoard, node.CurrentPlayer);
-                    else node.Children[i].Value = 0;
+                        node.Children[i].Value = ratePositions(newBoard, node.Children[i].CurrentPlayer); //care pls, maybe node.CurrentPlayer
+                    else node.Children[i].Value = (short)-ratePositions(newBoard, node.Children[i].CurrentPlayer);
                     leafs.AddLast(node.Children[i]);
                 }
                 else

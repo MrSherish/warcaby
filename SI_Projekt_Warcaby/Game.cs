@@ -13,7 +13,7 @@ namespace Warcaby
     {
         protected Form2 treeDisplayer = null;
 
-        public bool displayNumber { get; private set; }
+        public bool displayNumber { get;  set; }
         public enum Alhorithms
         {
             Human,
@@ -543,7 +543,7 @@ namespace Warcaby
 
         public void ToggleDisplayingNumberOfLeafs()
         {
-            this.displayNumber = !this.displayNumber;
+            displayNumber = !displayNumber;
         }
     }
 }

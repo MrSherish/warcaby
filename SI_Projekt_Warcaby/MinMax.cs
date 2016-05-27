@@ -84,7 +84,7 @@ namespace Warcaby
             DateTime after = DateTime.Now;
             string message = string.Format("Zbudowanie drzewa zajelo: {0}.", after - before);
             if(!(this is AlfaBeta))
-                MessageBox.Show("MiniMax, liczba liści: " + numOfCheckedLeafs);
+                if (game.displayNumber) MessageBox.Show("MiniMax, liczba liści: " + numOfCheckedLeafs);
                 
             if (computerStarts)
                 max(root);
